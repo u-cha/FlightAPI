@@ -40,7 +40,7 @@ class DataBaseService:
         result = [dict(zip(description, entry)) for entry in cursor.fetchall()]
         return result
 
-    def __get_entries_by_kwargs(self, table_name, **kwargs):
+    def __get_entries_by_kwargs(self, table_name: str, **kwargs) -> List[dict]:
         if kwargs:
             search_params = ' AND '.join([f'{key}="{kwargs[key]}"' for key in kwargs])
             sql_query = f'SELECT * FROM {table_name} WHERE {search_params}'
@@ -54,7 +54,13 @@ class DataBaseService:
         return entries_list
 
     def get_one_entry_from_table_by_id(self, table_name: str, id_parameter: (int, str)) -> dict:
-        return self.__get_entries_by_kwargs(table_name, id=id_parameter)[0]
+        try:
+            entry = self.__get_entries_by_kwargs(table_name, id=id_parameter)[0]
+        except IndexError:
+            entry = None
+        finally:
+            return entry
+
 
     def get_one_entry_from_table_by_code(self, table_name: str, code_parameter: str) -> dict:
         return self.__get_entries_by_kwargs(table_name, code=code_parameter)[0]
