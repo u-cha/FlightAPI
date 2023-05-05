@@ -73,7 +73,7 @@ class BaseHandler:
     def get_data(self, table_name, data_object, **kwargs):
         dba_agent = DataBaseService('./database/airports.sqlite3')
         if not self.path_params:
-            dba_agent.get_entries_by_kwargs(table_name)
+            dba_agent.__get_entries_by_kwargs(table_name)
             self.error = dba_agent.__error
             if not self.error and dba_agent.__data:
                 content = dba_agent.__data['content']
@@ -84,7 +84,7 @@ class BaseHandler:
                     self.data = '[' + ', '.join([data_object(*entry).jsonize() for entry in content]) + ']'
 
         else:
-            dba_agent.get_entries_by_kwargs(table_name, code=self.path_params[0])
+            dba_agent.__get_entries_by_kwargs(table_name, code=self.path_params[0])
             self.error = dba_agent.__error
             if not self.error and dba_agent.__data:
                 content = dba_agent.__data['content']
@@ -181,7 +181,7 @@ class AirportsHandler(BaseHandler):
 
     def post_data(self):
         dba_agent = DataBaseService('./database/airports.sqlite3')
-        dba_agent.get_entries_by_kwargs('Airports', code=self.query_params['code'])
+        dba_agent.__get_entries_by_kwargs('Airports', code=self.query_params['code'])
         self.error = dba_agent.__error
         if not self.error and dba_agent.__data:
             content = dba_agent.__data['content']
@@ -257,33 +257,33 @@ class FlightsHandler(BaseHandler):
                 to_airport_code = self.query_params.get('to_airport_code')
                 airline_code = self.query_params.get('airline')
                 if from_airport_code:
-                    response = dba_agent.get_entries_by_kwargs('Airports', code=from_airport_code).__data
+                    response = dba_agent.__get_entries_by_kwargs('Airports', code=from_airport_code).__data
                     from_airport_id = int(dict(zip(response['description'], response['content'][0]))['id'])
                 if to_airport_code:
-                    response = dba_agent.get_entries_by_kwargs('Airports', code=to_airport_code).__data
+                    response = dba_agent.__get_entries_by_kwargs('Airports', code=to_airport_code).__data
                     to_airport_id = int(dict(zip(response['description'], response['content'][0]))['id'])
                 if airline_code:
-                    response = dba_agent.get_entries_by_kwargs('Airlines', code=airline_code).__data
+                    response = dba_agent.__get_entries_by_kwargs('Airlines', code=airline_code).__data
                     airline_id = int(dict(zip(response['description'], response['content'][0]))['id'])
 
                 if from_airport_code and to_airport_code and airline_code:
-                    dba_agent.get_entries_by_kwargs('Flights', from_airport_id=from_airport_id,
-                                                    to_airport_id=to_airport_id, airline_id=airline_id)
+                    dba_agent.__get_entries_by_kwargs('Flights', from_airport_id=from_airport_id,
+                                                      to_airport_id=to_airport_id, airline_id=airline_id)
 
                 elif from_airport_code and to_airport_code:
-                    dba_agent.get_entries_by_kwargs('Flights', from_airport_id=from_airport_id,
-                                                    to_airport_id=to_airport_id)
+                    dba_agent.__get_entries_by_kwargs('Flights', from_airport_id=from_airport_id,
+                                                      to_airport_id=to_airport_id)
 
                 elif from_airport_code:
-                    dba_agent.get_entries_by_kwargs('Flights', from_airport_id=from_airport_id)
+                    dba_agent.__get_entries_by_kwargs('Flights', from_airport_id=from_airport_id)
 
                 elif to_airport_code:
-                    dba_agent.get_entries_by_kwargs('Flights', to_airport_id=to_airport_id)
+                    dba_agent.__get_entries_by_kwargs('Flights', to_airport_id=to_airport_id)
 
                 elif airline_id:
-                    dba_agent.get_entries_by_kwargs('Flights', airline_id=airline_id)
+                    dba_agent.__get_entries_by_kwargs('Flights', airline_id=airline_id)
             else:
-                dba_agent.get_entries_by_kwargs('Flights')
+                dba_agent.__get_entries_by_kwargs('Flights')
 
             self.error = dba_agent.__error
             if not self.error and dba_agent.__data:
@@ -304,11 +304,11 @@ class FlightsHandler(BaseHandler):
                             response_entry.pop('airline_id')
                         )
 
-                        response_entry['from_airport'] = dto.AirportDTO(*dba_agent.get_entries_by_kwargs(
+                        response_entry['from_airport'] = dto.AirportDTO(*dba_agent.__get_entries_by_kwargs(
                             'Airports', id=from_airport).__data['content'][0])
-                        response_entry['to_airport'] = dto.AirportDTO(*dba_agent.get_entries_by_kwargs(
+                        response_entry['to_airport'] = dto.AirportDTO(*dba_agent.__get_entries_by_kwargs(
                             'Airports', id=to_airport).__data['content'][0])
-                        response_entry['airline'] = dto.AirlineDTO(*dba_agent.get_entries_by_kwargs(
+                        response_entry['airline'] = dto.AirlineDTO(*dba_agent.__get_entries_by_kwargs(
                             'Airlines', id=airline).__data['content'][0])
                         flight = dto.FlightDTO(**dict(response_entry.items()))
                         flights.append(flight.jsonize())
@@ -323,13 +323,13 @@ class FlightsHandler(BaseHandler):
         airline_code = self.query_params['airline']
 
         dba = DataBaseService('../database/airports.sqlite3')
-        response = dba.get_entries_by_kwargs('Flights', code=from_airport_code).__data
+        response = dba.__get_entries_by_kwargs('Flights', code=from_airport_code).__data
         from_airport_id = int(dict(zip(response['description'], response['content'][0]))['id'])
 
-        response = dba.get_entries_by_kwargs('Flights', code=to_airport_code).__data
+        response = dba.__get_entries_by_kwargs('Flights', code=to_airport_code).__data
         to_airport_id = int(dict(zip(response['description'], response['content'][0]))['id'])
 
-        response = dba.get_entries_by_kwargs('Flights', code=airline_code).__data
+        response = dba.__get_entries_by_kwargs('Flights', code=airline_code).__data
         airline_id = int(dict(zip(response['description'], response['content'][0]))['id'])
 
 
@@ -364,7 +364,7 @@ class AirlinesHandler(BaseHandler):
 
     def post_data(self):
         dba_agent = DataBaseService('./database/airports.sqlite3')
-        dba_agent.get_entries_by_kwargs('Airlines', code=self.query_params['code'])
+        dba_agent.__get_entries_by_kwargs('Airlines', code=self.query_params['code'])
         self.error = dba_agent.__error
         if not self.error and dba_agent.__data:
             content = dba_agent.__data['content']
@@ -405,15 +405,15 @@ class RoutesHandler(BaseHandler):
         from_airport_code = self.path_params[0]
         to_airport_code = self.path_params[1]
 
-        response = dba_agent.get_entries_by_kwargs('Airports', code=from_airport_code).__data
+        response = dba_agent.__get_entries_by_kwargs('Airports', code=from_airport_code).__data
         from_airport_id = int(dict(zip(response['description'], response['content'][0]))['id'])
 
-        response = dba_agent.get_entries_by_kwargs('Airports', code=to_airport_code).__data
+        response = dba_agent.__get_entries_by_kwargs('Airports', code=to_airport_code).__data
         to_airport_id = int(dict(zip(response['description'], response['content'][0]))['id'])
 
         if num_stops == 0:
-            dba_agent.get_entries_by_kwargs('Flights', from_airport_id=from_airport_id,
-                                            to_airport_id=to_airport_id)
+            dba_agent.__get_entries_by_kwargs('Flights', from_airport_id=from_airport_id,
+                                              to_airport_id=to_airport_id)
 
         self.error = dba_agent.__error
         if not self.error and dba_agent.__data:
@@ -434,11 +434,11 @@ class RoutesHandler(BaseHandler):
                         response_entry.pop('airline_id')
                     )
 
-                    response_entry['from_airport'] = dto.AirportDTO(*dba_agent.get_entries_by_kwargs(
+                    response_entry['from_airport'] = dto.AirportDTO(*dba_agent.__get_entries_by_kwargs(
                         'Airports', id=from_airport).__data['content'][0])
-                    response_entry['to_airport'] = dto.AirportDTO(*dba_agent.get_entries_by_kwargs(
+                    response_entry['to_airport'] = dto.AirportDTO(*dba_agent.__get_entries_by_kwargs(
                         'Airports', id=to_airport).__data['content'][0])
-                    response_entry['airline'] = dto.AirlineDTO(*dba_agent.get_entries_by_kwargs(
+                    response_entry['airline'] = dto.AirlineDTO(*dba_agent.__get_entries_by_kwargs(
                         'Airlines', id=airline).__data['content'][0])
                     flight = dto.FlightDTO(**dict(response_entry.items()))
                     routes.append(flight.jsonize())

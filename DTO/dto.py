@@ -9,7 +9,7 @@ class DTO:
 
 
 class AirportDTO(DTO):
-    def __init__(self, id, code, name):
+    def __init__(self, id: (int, str), code: str, name: str):
         self.id = id
         self.code = code
         self.name = name
