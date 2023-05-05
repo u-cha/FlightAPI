@@ -46,10 +46,18 @@ class DataBaseService:
             sql_query = f'SELECT * FROM {table_name} WHERE {search_params}'
         else:
             sql_query = f'SELECT * FROM {table_name}'
-        return self.__manipulate_database(sql_query)
+        try:
+            query_result = self.__manipulate_database(sql_query)
+        except exceptions.DataBaseError as error:
+            raise exceptions.DataBaseError from error
+        entries_list = self.__convert_cursor_to_dict_list(query_result)
+        return entries_list
 
-    def get_entry_from_table_by_id(self, table_name, id_parameter):
-        return self.__get_entries_by_kwargs(table_name, id=id_parameter)
+    def get_one_entry_from_table_by_id(self, table_name: str, id_parameter: (int, str)) -> dict:
+        return self.__get_entries_by_kwargs(table_name, id=id_parameter)[0]
+
+    def get_one_entry_from_table_by_code(self, table_name: str, code_parameter: str) -> dict:
+        return self.__get_entries_by_kwargs(table_name, code=code_parameter)[0]
 
     def insert_entry_into_table(self, table_name, **kwargs):
         column_names = tuple(kwargs.keys())
@@ -61,5 +69,9 @@ class DataBaseService:
 
 if __name__ == '__main__':
     dbs = DataBaseService('airports.sqlite3')
-    result = dbs.get_all_entries_from_table('Airports')
-    print(result)
+    res = dbs.get_one_entry_from_table_by_id('Airports', "1")
+    res2 = dbs.get_one_entry_from_table_by_code('Airports', "SVO")
+    print(res, res2, sep='\n')
+    res = dbs.get_one_entry_from_table_by_id('Airlines', "1")
+    res2 = dbs.get_one_entry_from_table_by_code('Airlines', "SU")
+    print(res, res2, sep='\n')
