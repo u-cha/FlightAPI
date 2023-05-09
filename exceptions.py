@@ -16,3 +16,7 @@ class MissingParams(Exception):
     """Marks the situation when one or more parameters are missing"""
 
 
+class EntryNotFoundError(Exception):
+    """Marks the situation when entry with provided parameters  was not found in database"""
+
+
