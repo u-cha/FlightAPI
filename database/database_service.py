@@ -22,7 +22,7 @@ class DataBaseService:
                     db_cursor.execute(sql_query)
                     db_connection.commit()
         except sqlite3.Error as error:
-            raise exceptions.DataBaseError from error
+            raise exceptions.DataBaseError(error.sqlite_errorname, error.args) from error
         return db_cursor
 
     def get_all_entries_from_table(self, table_name: str) -> List[dict]:
@@ -69,19 +69,14 @@ class DataBaseService:
         finally:
             return entry
 
-    def insert_entry_into_table(self, table_name, **kwargs):
+    def insert_one_entry_into_table(self, table_name, **kwargs):
         column_names = tuple(kwargs.keys())
         params = tuple(kwargs.values())
         sql_query = f'INSERT INTO {table_name} {column_names} VALUES {params}'
         self.__manipulate_database(sql_query)
-        return self.__get_entries_by_kwargs(table_name, **kwargs)
+        return None
 
 
 if __name__ == '__main__':
     dbs = DataBaseService('airports.sqlite3')
-    res = dbs.get_one_entry_from_table_by_id('Airports', "1")
-    res2 = dbs.get_one_entry_from_table_by_code('Airports', "SVO")
-    print(res, res2, sep='\n')
-    res = dbs.get_one_entry_from_table_by_id('Airlines', "1")
-    res2 = dbs.get_one_entry_from_table_by_code('Airlines', "SU")
-    print(res, res2, sep='\n')
+    ...

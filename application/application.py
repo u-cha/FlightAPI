@@ -1,6 +1,7 @@
 import typing
 import database.database_service as DBS
 import DTO.dto as DTO
+import exceptions
 
 
 class Application:
@@ -66,10 +67,55 @@ class Application:
             return DTO.AirlineDTO(**airline)
         return None
 
+    @classmethod
+    def get_all_flights(cls) -> typing.List[DTO.FlightDTO]:
+        database_service = DBS.DataBaseService('../database/airports.sqlite3')
+        all_flights_list = database_service.get_all_entries_from_table('Flights')
+        all_flights_DTOs_list = []
+        for entry in all_flights_list:
+            flight = DTO.FlightDTO(entry['id'],
+                                   cls.get_airport_by_id(entry['from_airport_id']),
+                                   cls.get_airport_by_id(entry['to_airport_id']),
+                                   cls.get_airline_by_id(entry['airline_id']),
+                                   entry['price'])
+            all_flights_DTOs_list.append(flight)
+        return all_flights_DTOs_list
+
+    @classmethod
+    def post_airport(cls, code: str = None, name: str = None) -> (DTO.AirportDTO, None):
+        if code and name:
+            airport = cls.get_airport_by_code(code)
+            if airport:
+                raise exceptions.EntryAlreadyExistsError
+            else:
+                dbs = DBS.DataBaseService('../database/airports.sqlite3')
+                dbs.insert_one_entry_into_table('Airports', code=code, name=name)
+                return cls.get_airport_by_code(code)
+        else:
+            raise exceptions.MissingParams
+
+    @classmethod
+    def post_airline(cls, code: str = None, name: str = None) -> (DTO.AirlineDTO, None):
+        if code and name:
+            airline = cls.get_airline_by_code(code)
+            if airline:
+                raise exceptions.EntryAlreadyExistsError
+            else:
+                dbs = DBS.DataBaseService('../database/airports.sqlite3')
+                dbs.insert_one_entry_into_table('Airlines', code=code, name=name)
+                return cls.get_airline_by_code(code)
+        else:
+            raise exceptions.MissingParams
+
+
+
 if __name__ == '__main__':
 
-    airline = Application.get_airline_by_id(810)
-    print(airline.name)
+    airline = Application.post_airline(code='Z1', name='Austrania')
+    if airline:
+        print(airline.name, airline.code, airline.id)
+
+
 
 
 
