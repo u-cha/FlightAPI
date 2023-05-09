@@ -61,9 +61,13 @@ class DataBaseService:
         finally:
             return entry
 
-
     def get_one_entry_from_table_by_code(self, table_name: str, code_parameter: str) -> dict:
-        return self.__get_entries_by_kwargs(table_name, code=code_parameter)[0]
+        try:
+            entry = self.__get_entries_by_kwargs(table_name, code=code_parameter)[0]
+        except IndexError:
+            entry = None
+        finally:
+            return entry
 
     def insert_entry_into_table(self, table_name, **kwargs):
         column_names = tuple(kwargs.keys())
