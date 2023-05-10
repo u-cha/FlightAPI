@@ -76,7 +76,19 @@ class DataBaseService:
         self.__manipulate_database(sql_query)
         return None
 
+    def update_one_entry_in_table(self, table_name: str, set_kwargs: dict, filter_kwargs: dict):
+        set_string = ', '.join([f'{set_pair[0]}="{set_pair[1]}"' for set_pair in set_kwargs.items()])
+        filter_string = ' AND '.join(['='.join(map(str, filter_pair)) for filter_pair in filter_kwargs.items()])
+        sql_query = f'UPDATE {table_name} SET {set_string} WHERE {filter_string}'
+        self.__manipulate_database(sql_query)
+        return None
+
 
 if __name__ == '__main__':
     dbs = DataBaseService('airports.sqlite3')
     ...
+    # resp = dbs.get_one_entry_from_table_by_id('Airports', 3271)
+    # print(resp)
+    # dbs.update_one_entry_in_table('Airports', dict(name='Aushvaria'), dict(id=3271))
+    # resp = dbs.get_one_entry_from_table_by_id('Airports', 3271)
+    # print(resp)

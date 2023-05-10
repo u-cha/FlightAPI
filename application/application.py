@@ -1,4 +1,6 @@
 import typing
+
+import DTO.dto
 import database.database_service as dbs
 import DTO.dto as dto
 import exceptions
@@ -97,7 +99,7 @@ class Application:
                                                                 from_airport_id=from_airport_id,
                                                                 to_airport_id=to_airport_id,
                                                                 airline_id=airline_id)[0]
-            except IndexError as error:
+            except IndexError:
                 return None
             flight_dto = dto.FlightDTO(flight['id'],
                                        self.get_airport_by_id(flight['from_airport_id']),
@@ -213,7 +215,7 @@ class Application:
     @classmethod
     def post_flight(cls,
                     from_airport_code: str = None, to_airport_code: str = None,
-                    airline_code: str = None, price: int = None):
+                    airline_code: str = None, price: int = None) -> DTO.dto.FlightDTO:
         if not all((from_airport_code, to_airport_code, airline_code, price)):
             raise exceptions.MissingParams
         try:
@@ -234,25 +236,25 @@ class Application:
                                                    price=price)
             return cls().get_flight_by_from_to_airline(from_airport_code, to_airport_code, airline_code)
 
+    def patch_flight(self,
+                     from_airport_code: str, to_airport_code: str,
+                     airline_code: str, price: int):
+        if not all((from_airport_code, to_airport_code, airline_code, price)):
+            raise exceptions.MissingParams
+        flight = self.get_flight_by_from_to_airline(from_airport_code, to_airport_code, airline_code)
+        if flight:
+            from_airport_id = self.get_airport_id_by_code(from_airport_code)
+            to_airport_id = self.get_airport_id_by_code(to_airport_code)
+            airline_id = self.get_airline_id_by_code(airline_code)
+            db_service = dbs.DataBaseService('../database/airports.sqlite3')
+            db_service.update_one_entry_in_table('Flights',
+                                                 dict(price=price),
+                                                 dict(from_airport_id=from_airport_id,
+                                                      to_airport_id=to_airport_id,
+                                                      airline_id=airline_id))
+            return self.get_flight_by_from_to_airline(from_airport_code, to_airport_code, airline_code)
+
 
 if __name__ == '__main__':
-    # airport = Application().get_airport_by_code('HAZ')
-    # print(airport.name)
-    # flights_list = Application().get_flights_by_airline('U7')
-    # for flightr in flights_list:
-    #     print(flightr.id, flightr.from_airport.code, flightr.to_airport.code, flightr.airline.code, flightr.price)
-    #
-    # # flights_list = Application().get_flights_by_from('HAH')
-    # # for flightr in flights_list:
-    # #     print(flightr.id, flightr.from_airport.code, flightr.to_airport.code, flightr.airline.code, flightr.price)
-    #
-    flightr = Application().post_flight('KEJ', 'OLZ', 'SU', 100)
-    print(flightr.id, flightr.from_airport.code, flightr.to_airport.code, flightr.price)
-    # #
-    # flights_list = Application().get_flights_by_airline('U7')
-    # for flightr in flights_list:
-    #     print(flightr.id, flightr.from_airport.code, flightr.to_airport.code, flightr.airline.code, flightr.price)
-
-
-    # flightr = Application().get_flight_by_from_to_airline('OLZ', 'KEJ', 'U7')
-    # print(flightr.id, flightr.from_airport.code, flightr.to_airport.code, flightr.price)
+    resp = Application().patch_flight('OLZ', 'FVM', '4B', 10100)
+    print(resp.price, resp.airline.code)
