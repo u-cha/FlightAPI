@@ -20,3 +20,5 @@ class EntryNotFoundError(Exception):
     """Marks the situation when entry with provided parameters  was not found in database"""
 
 
+class RequestError:
+    pass

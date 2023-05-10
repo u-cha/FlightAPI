@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 import handler.handler as handlers
-
+import exceptions
 from server.path_processor import PathProcessor
 from server.routes import routes_and_handlers_dict
 
@@ -9,17 +9,14 @@ class Server(BaseHTTPRequestHandler):
     def do_GET(self):
         handler = self.__assign_handler_by_path()
         self.__perform(handler.get_data)
-        self.__respond(handler)
 
     def do_POST(self):
         handler = self.__assign_handler_by_path()
-        handler.perform('post_data')
-        self.__respond(handler)
+        handler.perform(handler.post_data)
 
     def do_PATCH(self):
         handler = self.__assign_handler_by_path()
-        handler.perform('patch_data')
-        self.__respond(handler)
+        handler.perform(handler.patch_data)
 
     def __assign_handler_by_path(self):
         route, path_params, query_params = self.__decompose_path()
@@ -36,8 +33,22 @@ class Server(BaseHTTPRequestHandler):
         query_params = PathProcessor.determine_query_params(self.path)
         return route, path_params, query_params
 
-    def __respond(self, handler):
-        self.send_response(handler.status)
-        self.send_header('Content-type', handler.content_type)
+    def __perform(self, handler_function):
+        try:
+            response = handler_function()
+            self.__respond(response.status, response.data)
+        except exceptions.DataBaseError:
+            self.__respond(500, 'A DB Error occurred')
+        except exceptions.RequestError:
+            self.__respond(400, 'Incorrect request')
+        except exceptions.EntryNotFoundError:
+            self.__respond(404, 'Entry not found')
+        except exceptions.EntryAlreadyExistsError:
+            self.__respond(409, 'Entry already exists')
+
+    def __respond(self, status_code: int, server_message: str, json=None) -> None:
+        self.send_response(status_code)
+        content_type = 'application/json' if json else 'text/plain'
+        self.send_header('Content-type', content_type)
         self.end_headers()
-        self.wfile.write(bytes(str(handler.__data), encoding='utf-8'))
+        self.wfile.write(bytes(server_message, encoding='utf-8'))
