@@ -30,18 +30,14 @@ class FlightDTO(DTO):
         self.airline = airline
         self.price = price
 
-    def jsonize(self):
-        self.from_airport = self.from_airport.__dict__
-        self.to_airport = self.to_airport.__dict__
-        self.airline = self.airline.__dict__
-        json_obj = json.dumps(self.__dict__)
-        return json_obj
-
-
 class RouteDTO(DTO):
-    def __init__(self, num_stops, flights: List[DTO]):
-        self.id = id
-        self.from_airport = from_airport
-        self.to_airport = to_airport
-        self.airline = airline
-        self.price = price
+    def __init__(self, num_stops, flights: List[FlightDTO]):
+        self.num_stops = num_stops
+        self.flights = flights
+        self.total_price = self.__calculate_total_price()
+
+    def __calculate_total_price(self):
+        total_price = 0
+        for flight in self.flights:
+            total_price += flight.price
+        return total_price

@@ -83,12 +83,44 @@ class DataBaseService:
         self.__manipulate_database(sql_query)
         return None
 
+    def get_two_stopped_routes_airport_ids(self, from_airport_id: int, to_airport_id: int) -> List[dict]:
+        sql_query = f'''
+WITH FromAirport AS (SELECT * FROM Flights WHERE from_airport_id = {str(from_airport_id)}), 
+ToAirport AS (SELECT * FROM Flights WHERE to_airport_id = {str(to_airport_id)}),
+MidAirport AS (SELECT * FROM Flights) 
+SELECT FromAirport.from_airport_id start_point, 
+FromAirport.to_airport_id first_stop, 
+FromAirport.airline_id first_airline,
+MidAirport.to_airport_id second_stop, 
+MidAirport.airline_id second_airline,
+ToAirport.to_airport_id finish_point,
+ToAirport.airline_id third_airline
+FROM FromAirport, MidAirport, 
+ToAirport 
+WHERE FromAirport.to_airport_id = MidAirport.from_airport_id AND MidAirport.to_airport_id = ToAirport.from_airport_id'''
+        query_result = self.__manipulate_database(sql_query)
+        entries_list = self.__convert_cursor_to_dict_list(query_result)
+        return entries_list
+
+    def get_one_stopped_routes_airport_ids(self, from_airport_id: int, to_airport_id: int) -> List[dict]:
+        sql_query = f'''
+WITH FromAirport AS (SELECT * FROM Flights WHERE from_airport_id = {str(from_airport_id)}), 
+ToAirport AS (SELECT * FROM Flights WHERE to_airport_id = {str(to_airport_id)})
+SELECT FromAirport.from_airport_id start_point, 
+FromAirport.airline_id first_airline, 
+FromAirport.to_airport_id first_stop, 
+ToAirport.airline_id second_airline,
+ToAirport.to_airport_id finish_point 
+FROM FromAirport, ToAirport 
+WHERE FromAirport.to_airport_id = ToAirport.from_airport_id'''
+        query_result = self.__manipulate_database(sql_query)
+        entries_list = self.__convert_cursor_to_dict_list(query_result)
+        return entries_list
+
 
 if __name__ == '__main__':
     dbs = DataBaseService('airports.sqlite3')
-    ...
-    # resp = dbs.get_one_entry_from_table_by_id('Airports', 3271)
-    # print(resp)
-    # dbs.update_one_entry_in_table('Airports', dict(name='Aushvaria'), dict(id=3271))
-    # resp = dbs.get_one_entry_from_table_by_id('Airports', 3271)
-    # print(resp)
+    a = dbs.get_two_stopped_routes_airport_ids(657, 1598)
+    print(a)
+    b = dbs.get_one_stopped_routes_airport_ids(1503, 1598)
+    print(b)

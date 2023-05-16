@@ -12,11 +12,11 @@ class Server(BaseHTTPRequestHandler):
 
     def do_POST(self):
         handler = self.__assign_handler_by_path()
-        handler.perform(handler.post_data)
+        self.__perform(handler.post_data)
 
     def do_PATCH(self):
         handler = self.__assign_handler_by_path()
-        handler.perform(handler.patch_data)
+        self.__perform(handler.patch_data)
 
     def __assign_handler_by_path(self):
         route, path_params, query_params = self.__decompose_path()
@@ -36,7 +36,7 @@ class Server(BaseHTTPRequestHandler):
     def __perform(self, handler_function):
         try:
             response = handler_function()
-            self.__respond(response.status, response.data)
+            self.__respond(response.status, response.data, json=True)
         except exceptions.DataBaseError:
             self.__respond(500, 'A DB Error occurred')
         except exceptions.RequestError:
@@ -46,7 +46,7 @@ class Server(BaseHTTPRequestHandler):
         except exceptions.EntryAlreadyExistsError:
             self.__respond(409, 'Entry already exists')
 
-    def __respond(self, status_code: int, server_message: str, json=None) -> None:
+    def __respond(self, status_code: int, server_message: str, json=False) -> None:
         self.send_response(status_code)
         content_type = 'application/json' if json else 'text/plain'
         self.send_header('Content-type', content_type)
