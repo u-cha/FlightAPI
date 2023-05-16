@@ -1,0 +1,557 @@
+{
+	"info": {
+		"_postman_id": "1f0d7a64-d037-44d6-aba8-c247d03ceae2",
+		"name": "FlightService API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "25308280"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "Correct Requests",
+					"item": [
+						{
+							"name": "Get Airports",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:8080/airports"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Airport By Code",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:8080/airports/AUH"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Airlines",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:8080/airlines"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Airline By Code",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:8080/airlines/S7"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Flights",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:8080/flights"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Flight By Airp-Airp-Airl",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/flights?from_airport_code=ATM&to_airport_code=HSL&airline=U7",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"flights"
+									],
+									"query": [
+										{
+											"key": "from_airport_code",
+											"value": "ATM"
+										},
+										{
+											"key": "to_airport_code",
+											"value": "HSL"
+										},
+										{
+											"key": "airline",
+											"value": "U7"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Flight By toAirp",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/flights?to_airport_code=KEJ",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"flights"
+									],
+									"query": [
+										{
+											"key": "to_airport_code",
+											"value": "KEJ"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Routes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/routes/SVO/SVO?max_stops=2",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"routes",
+										"SVO",
+										"SVO"
+									],
+									"query": [
+										{
+											"key": "max_stops",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Flight By Airline",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/flights?airline=SU",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"flights"
+									],
+									"query": [
+										{
+											"key": "airline",
+											"value": "SU"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Incorrect Requests",
+					"item": [
+						{
+							"name": "Get Airline By Code (No Code)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:8080/airlines/"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Airline By Code (Incorrect Code)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "http://127.0.0.1:8080/airlines/JK"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "Correct Requests",
+					"item": [
+						{
+							"name": "Post Airport",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/airports?code=EEE&name=AuhBarabash",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"airports"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "EEE"
+										},
+										{
+											"key": "name",
+											"value": "AuhBarabash"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post Airline",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/airlines?code=6F&name=SupovoyNabor",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"airlines"
+									],
+									"query": [
+										{
+											"key": "code",
+											"value": "6F"
+										},
+										{
+											"key": "name",
+											"value": "SupovoyNabor"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post Flight",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/flights?from_airport_code=AUH&to_airport_code=KEJ&airline=SU&price=190",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"flights"
+									],
+									"query": [
+										{
+											"key": "from_airport_code",
+											"value": "AUH"
+										},
+										{
+											"key": "to_airport_code",
+											"value": "KEJ"
+										},
+										{
+											"key": "airline",
+											"value": "SU"
+										},
+										{
+											"key": "price",
+											"value": "190"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Incorrect Requests",
+					"item": [
+						{
+							"name": "Post Airport Incorrect Params",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8080/airports?codex=AUH&name=AuhBarabash",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8080",
+									"path": [
+										"airports"
+									],
+									"query": [
+										{
+											"key": "codex",
+											"value": "AUH"
+										},
+										{
+											"key": "name",
+											"value": "AuhBarabash"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "PATCH",
+			"item": [
+				{
+					"name": "PATCH Flight",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": "http://127.0.0.1:8080/flights/AUHAZBSU"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "path",
+			"value": "airports/"
+		}
+	]
+}
